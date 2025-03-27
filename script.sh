@@ -6,19 +6,22 @@ GLOBAL_README="${BASE_DIR}/README.md"
 
 # Function to create a new CTF
 create_ctf() {
-    local ctf_name="$1"
+    # Declare local variables using typeset
+    typeset ctf_name="$1"
     
     if [[ -z "$ctf_name" ]]; then
         echo "Error: Please provide a CTF name"
         return 1
-    }
+    fi
+
+    # Declare more local variables
+    typeset ctf_dir="${BASE_DIR}/${ctf_name}"
+    typeset ctf_readme="${ctf_dir}/README.md"
 
     # Create CTF directory
-    local ctf_dir="${BASE_DIR}/${ctf_name}"
     mkdir -p "$ctf_dir"
 
     # Create global CTF README
-    local ctf_readme="${ctf_dir}/README.md"
     cat > "$ctf_readme" << EOF
 ---
 layout: default
@@ -40,13 +43,13 @@ EOF
     sed -i "/{% include disqus.html %}/i ## >> [${ctf_name}](./${ctf_name}/README)" "$GLOBAL_README"
 
     # Create category directories
-    local categories=("rev" "crypto" "pwn" "web" "osint" "misc" "blockchain")
+    typeset -a categories=("rev" "crypto" "pwn" "web" "osint" "misc" "blockchain")
     for category in "${categories[@]}"; do
-        local category_dir="${ctf_dir}/${category}"
+        typeset category_dir="${ctf_dir}/${category}"
         mkdir -p "$category_dir"
 
         # Create category README
-        local category_readme="${category_dir}/README.md"
+        typeset category_readme="${category_dir}/README.md"
         cat > "$category_readme" << EOF
 ---
 layout: default
@@ -60,24 +63,24 @@ EOF
 
 # Function to create a new category in an existing CTF
 create_category() {
-    local ctf_name="$1"
-    local category="$2"
+    typeset ctf_name="$1"
+    typeset category="$2"
 
     if [[ -z "$ctf_name" || -z "$category" ]]; then
         echo "Error: Please provide CTF name and category"
         return 1
-    }
+    fi
 
-    local ctf_dir="${BASE_DIR}/${ctf_name}"
-    local category_dir="${ctf_dir}/${category}"
-    local ctf_readme="${ctf_dir}/README.md"
-    local category_readme="${category_dir}/README.md"
+    typeset ctf_dir="${BASE_DIR}/${ctf_name}"
+    typeset category_dir="${ctf_dir}/${category}"
+    typeset ctf_readme="${ctf_dir}/README.md"
+    typeset category_readme="${category_dir}/README.md"
 
     # Validate CTF exists
     if [[ ! -d "$ctf_dir" ]]; then
         echo "Error: CTF '${ctf_name}' does not exist"
         return 1
-    }
+    fi
 
     # Create category directory
     mkdir -p "$category_dir"
@@ -98,20 +101,20 @@ EOF
 
 # Function to create a new challenge
 create_challenge() {
-    local ctf_name="$1"
-    local category="$2"
-    local challenge_name="$3"
+    typeset ctf_name="$1"
+    typeset category="$2"
+    typeset challenge_name="$3"
 
     if [[ -z "$ctf_name" || -z "$category" || -z "$challenge_name" ]]; then
         echo "Error: Please provide CTF name, category, and challenge name"
         return 1
-    }
+    fi
 
-    local ctf_dir="${BASE_DIR}/${ctf_name}"
-    local category_dir="${ctf_dir}/${category}"
-    local challenge_dir="${category_dir}/${challenge_name}"
-    local category_readme="${category_dir}/README.md"
-    local challenge_readme="${challenge_dir}/README.md"
+    typeset ctf_dir="${BASE_DIR}/${ctf_name}"
+    typeset category_dir="${ctf_dir}/${category}"
+    typeset challenge_dir="${category_dir}/${challenge_name}"
+    typeset category_readme="${category_dir}/README.md"
+    typeset challenge_readme="${challenge_dir}/README.md"
 
     # Validate category exists
     if [[ ! -d "$category_dir" ]]; then
