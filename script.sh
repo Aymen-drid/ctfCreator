@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Base directory for CTF repositories
-BASE_DIR="/media/user/sh1/Aymen-drid.github.io"
+BASE_DIR="/mnt/sh1/Aymen-drid.github.io"
 GLOBAL_README="${BASE_DIR}/README.md"
 
 # Function to create a new CTF
@@ -54,7 +54,9 @@ EOF
 ---
 layout: default
 ---
-# ${ctf_name} - ${category^} Challenges
+# ${ctf_name} - ${category} Challenges
+
+## Challenges
 EOF
     done
 
@@ -93,7 +95,9 @@ create_category() {
 ---
 layout: default
 ---
-# ${ctf_name} - ${category^} Challenges
+# ${ctf_name} - ${category} Challenges
+
+## Challenges
 EOF
 
     echo "Category '${category}' created in CTF '${ctf_name}' successfully!"
@@ -130,7 +134,7 @@ create_challenge() {
 ---
 layout: default
 ---
-# ${ctf_name} - ${category^} Challenge: ${challenge_name}
+# ${ctf_name} - ${category} Challenge: ${challenge_name}
 
 ## Description
 
@@ -139,8 +143,14 @@ layout: default
 ## Flag
 EOF
 
-    # Update category README to include new challenge
-    sed -i "/# ${ctf_name} - ${category^} Challenges/a - [${challenge_name}](${challenge_name}/README.md)" "$category_readme"
+    # Update category README to include new challenge with proper navigation
+    if grep -q "## Challenges" "$category_readme"; then
+        # If "## Challenges" section exists, add the new challenge under it
+        sed -i "/## Challenges/a - [${challenge_name}](${challenge_name}/README.md)" "$category_readme"
+    else
+        # If "## Challenges" section doesn't exist, add it along with the new challenge
+        echo -e "\n## Challenges\n- [${challenge_name}](${challenge_name}/README.md)" >> "$category_readme"
+    fi
 
     echo "Challenge '${challenge_name}' created in CTF '${ctf_name}' category '${category}' successfully!"
 }
